@@ -1,6 +1,7 @@
 from typing import List
 
 from manim import *
+from palettable.matplotlib import Inferno_20
 
 
 class BubbleSort(Scene):
@@ -34,9 +35,15 @@ class BubbleSort(Scene):
 
     def assemble(self):
         """Assemble all animation elements"""
+        max_value = max(self.array)
+        min_value = min(self.array)
         for i, value in enumerate(self.array):
             square = VGroup()
-            stroke = Square(stroke_color=BLUE, stroke_width=4 * self.size_multiplier, fill_opacity=0, stroke_opacity=1,
+            value_interpolation = (value - min_value) / (max_value - min_value)
+            # color = colour.Color(hsl=(, 1, 0.5)).get_hex_l()
+            colors = Inferno_20.hex_colors
+            stroke = Square(stroke_color=colors[int(value_interpolation * (len(colors) - 1 - 3)) + 3],
+                            stroke_width=8 * self.size_multiplier, fill_opacity=0, stroke_opacity=1,
                             side_length=self.size_multiplier)
             digit = Text(str(value), size=1.3 * self.size_multiplier)
 
@@ -61,7 +68,7 @@ class BubbleSort(Scene):
                 self.move_arrow(i, time=0)
                 self.show_arrow(True)
             if self.array[i] > self.array[i + 1]:
-                self.move_arrow(i + 0.5, time=0.15 * i)
+                self.move_arrow(i + 0.5, time=0.10 * i)
                 self.swap(i, i + 1)
                 self.show_arrow(False)
                 self.wait(0.2)
